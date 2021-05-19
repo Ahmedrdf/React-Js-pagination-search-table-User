@@ -1,0 +1,60 @@
+.table {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+ .table td, #table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+ .table tr:nth-child(even){background-color: #f2f2f2;}
+  
+  .table tr:hover {background-color: #ddd;}
+  
+  .table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #3c5af0;
+    color: white;
+  }
+
+
+.pagesNumbers {
+  list-style: none;
+  display: flex;
+
+}
+.pagesNumbers li {
+  padding: 10px;
+  border: 1px solid rgb(71, 22, 22);
+
+  cursor: pointer;
+}
+.pagesNumbers li.active{
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  
+ }
+.pagesNumbers li button {
+  background-color: transparent;
+  border: none;
+  color: rgb(0, 0, 0);
+  font-size: 1.5 rem;
+  cursor: pointer;
+
+}
+
+
+ .pagesNumbers li button:hover {
+background-color: rgb(0, 0, 0);
+color:rgb(255, 255, 255)
+ }
+ .pagesNumbers li button:focus  {
+outline: none;
+ }
+
+
+
