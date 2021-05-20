@@ -265,7 +265,7 @@ if(users.length > maxpageNumberLimit){
                    
                  
                     <th>email</th>
-             
+                    <th>Image</th>
                     <th>Action</th>
              
                   </tr>
@@ -281,6 +281,7 @@ if(users.length > maxpageNumberLimit){
                     <td   key={index} >{row.userName}</td>
                     <td  key={index}>{row.id}</td>
                     <td >{row.email}</td>
+                    <td >    <img src={row.image} height="200px" /></td>
                    
                
                    
@@ -365,6 +366,12 @@ if(users.length > maxpageNumberLimit){
                 <strong>Id:</strong>
               </label>{" "}
               {currentUser.id}
+            </div>
+            <div>
+              <label>
+                <strong>Image:</strong>
+              </label>{" "}
+              <img src={currentUser.image} height="200px" />
             </div>
 
             <Link

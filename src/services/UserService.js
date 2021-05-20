@@ -14,7 +14,7 @@ const create = data => {
 };
 
 const update = (id, data) => {
-  return http.patch(`/Administartion/${id}`, data);
+  return http.patch(`/${id}`, data);
 };
 
 const remove = id => {

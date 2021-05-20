@@ -9,9 +9,31 @@ const User = props => {
     image :"",
     published: false
   };
+  const [baseImage, setBaseImage] = useState("");
   const [currentUser, setCurrentUser] = useState(initialUserState);
   const [message, setMessage] = useState("");
+  const uploadImage = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await convertBase64(file);
+    setBaseImage(base64);
+    currentUser.image=base64;
+  };
 
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+        
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
   const getUser = id => {
     UserDataService.get(id)
       .then(response => {
@@ -90,7 +112,7 @@ const User = props => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="email">Description</label>
+              <label htmlFor="email">Email</label>
               <input
                 type="text"
                 className="form-control"
@@ -100,6 +122,20 @@ const User = props => {
                 onChange={handleInputChange}
               />
             </div>
+            <div className="form-group">
+              <label htmlFor="email">Image</label>
+              <img src={baseImage} height="200px" />
+              <input
+        type="file"
+        
+        onChange={(e) => {
+          uploadImage(e);
+        }}
+      />
+      <br></br>
+    
+            </div>
+
 
             <div className="form-group">
               <label>
