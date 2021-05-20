@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import UserService from "../services/UserService";
 import { Link } from "react-router-dom";
-import  Pagination from './pagination'
+import  Pagination from './pagination';
+import { useHistory } from "react-router-dom";
 import './table.css'
 function UsersList()  {
   const [users, setUsers] = useState([]);
@@ -10,6 +11,28 @@ function UsersList()  {
   const [searchuserName, setSearchuserName] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(5);
+  const [baseImage, setBaseImage] = useState("");
+
+  const uploadImage = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await convertBase64(file);
+    setBaseImage(base64);
+  };
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
   // const Add = postsPerPage.map(Add => Add
   //   )
    // const handleAddrTypeChange = (e) => console.log((postsPerPage[e.target.value]))
@@ -28,6 +51,10 @@ function UsersList()  {
   const handilClick = (event) => {
     setCurrentPage(Number(event.target.id));
   }
+
+
+
+
   useEffect(() => {
     retrieveUsers();
   }, []);
@@ -78,8 +105,24 @@ else {
 
 }
 )
-
-
+const history = useHistory();
+const updateUser = (id) => {
+  console.log(id)
+  history.push("/user/"+id)
+  // UserService.update(currentUser.id,currentUser)
+  //   .then(response => {
+  //     console.log(response.data);
+  //  //   setMessage("The tutorial was updated successfully!");
+  //   })
+  //   .catch(e => {
+  //     console.log(e);
+  //   });
+};
+const setActiveTutorial = (user, index) => {
+  setCurrentUser(user);
+  console.log(user);
+  setCurrentIndex(index);
+};
   const refreshList = () => {
     retrieveUsers();
     setCurrentUser(null);
@@ -101,6 +144,32 @@ else {
         console.log(e);
       });
   };
+
+
+
+  const deleteUser= (id, e ) => {
+    if(window.confirm('Are you sure ? ')){
+      console.log("After   : " +users);
+        UserService.remove(id)
+        .then(responce => {
+         const tes = users.filter(item => item.id !== id)
+         setUsers(tes);
+         console.log("before    : " +tes);
+        })
+      //   .then(responce => {
+      //       console.log(responce.data);
+      //       // bech tjiib les parks li9a3dou 
+      //      const tableData= this.state.tableData.filter(item => item.id !== id);
+      //      console.log(tableData);
+      //     //  this.props.history.push("/tablerole");
+      //  this.setState({ users });
+      
+      //   })
+    }
+  }
+  
+
+
 
   const findByuserName = () => {
     UserService .findByuserName(searchuserName)
@@ -139,6 +208,28 @@ let pageDecrementBtn = null ;
 if(users.length > maxpageNumberLimit){
   pageDecrementBtn = <li onClick = {handleNextbtn}>&hellip;</li>
 }
+// const uploadImage = async (e) => {
+//  // console.log(e.target);
+//  var x = e.target;
+//  var file = e.target.files[0];
+//  const base64 = await convertBase64(file);
+//  console.log(base64);
+// };
+
+// const convertBase64 = (file) => {
+//   return new Promise((resolve, reject)=> {
+//     const fileReader = new FileReader();
+//     FileReader.readAsDataUrl(file);
+//     fileReader.onload = () => {
+//       resolve(FileReader.result);
+//     }
+//     fileReader.onerror((error)=>{
+//       reject(error);
+//     })
+//   } );
+
+// }
+
 
   function search(rows){
   //  const columns = rows[0] && Object.keys(rows[0]);
@@ -163,23 +254,7 @@ if(users.length > maxpageNumberLimit){
       </div>
       <div className="col-md-6">
         <h4>Users List</h4>
-{/* 
-        <ul className="list-group">
-          { search(users)&&
-            search(users).map((user, index) => (
-              <li
-                className={
-                  "list-group-item " + (index === currentIndex ? "active" : "")
-                }
-                onClick={() => setActiveUser(user, index)}
-                key={index}
-              >
-                {user.userName}
-            
-              </li>
-              
-            ))}
-        </ul> */}
+
         <div className="card-body">
               {/*begin: Datatable*/}
               <table className="table"  cellPadding={(0)} cellSpacing={0}>
@@ -191,34 +266,41 @@ if(users.length > maxpageNumberLimit){
                  
                     <th>email</th>
              
+                    <th>Action</th>
+             
                   </tr>
                 </thead>
                 <tbody>
-               { search(users).map((row) => (
+               {search(users) && search(users).map((row,index) => (
                   
-                  <tr key={row}>
-                  {search(users).map} 
-                    <td>{row.userName}</td>
-                    <td>{row.id}</td>
-                    <td>{row.email}</td>
+                  <tr        className={
+                     (index === currentIndex ? "active" : "")
+                  }
+                  onClick={() => setActiveTutorial(row, index)}       key={index}>
+                
+                    <td   key={index} >{row.userName}</td>
+                    <td  key={index}>{row.id}</td>
+                    <td >{row.email}</td>
                    
                
                    
              
                     <td>
                    
-                    <div>
+                
                    
                     {/* <Link to="editrole" className="menu-link" > */}
-            <a  className="btn btn-sm btn-clean btn-icon "title="Edit details">
-              <i className="la la-edit"  onClick={() => this.Update(row.id) } />
+            <a   title="Edit details"  onClick={() => updateUser(row.id) } >
+            
+           
+              <i class="glyphicon glyphicon-refresh"></i>
             </a>
                     {/* </Link> */}
-            <a href="javascript:;" className="btn btn-sm btn-clean btn-icon  "  onClick={(e) => this.delete(row.id, e )}    title="Delete">
-              <i className="la la-trash text-danger" />
+            <a  className="ba" onClick={(e) => deleteUser(row.id, e )}    title="Delete">
+            <i   class="glyphicon glyphicon-trash"></i>
             </a>
-          </div>
-      
+ 
+            
       </td>
                   
                   </tr>
@@ -250,6 +332,17 @@ if(users.length > maxpageNumberLimit){
         >
           Remove All
         </button>
+        < select
+      onChange={e => handleAddrTypeChange(e)}
+  className="browser-default custom-select" >
+          <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+         {/* {
+        Add.map((per, key) => <option defalut= "5" value={key}>{per}</option>)
+      } */}
+    </select >
+    
       </div>
       <div className="col-md-6">
         {currentUser ? (
@@ -263,19 +356,19 @@ if(users.length > maxpageNumberLimit){
             </div>
             <div>
               <label>
-                <strong>Description:</strong>
+                <strong>Email:</strong>
               </label>{" "}
-              {currentUser.description}
+              {currentUser.email}
             </div>
             <div>
               <label>
-                <strong>Status:</strong>
+                <strong>Id:</strong>
               </label>{" "}
-              {currentUser.published ? "Published" : "Pending"}
+              {currentUser.id}
             </div>
 
             <Link
-              to={"/users/" + currentUser.id}
+              to={"/user/" + currentUser.id}
               className="badge badge-warning"
             >
               Edit
@@ -287,6 +380,13 @@ if(users.length > maxpageNumberLimit){
             <p>Please click on a User...</p>
           </div>
         )}
+        <div>
+  
+    </div>
+    {/* <i class="glyphicon glyphicon-home"></i>
+<i class="glyphicon glyphicon-search"></i>
+<i class="glyphicon glyphicon-cloud"></i>
+<i class="glyphicon glyphicon-trash"></i> */}
       </div>
       {/* { renderPagesNumbers} */}
       {/* <nav>
@@ -307,16 +407,14 @@ if(users.length > maxpageNumberLimit){
       <option value="10">10</option>
       <option value="20">20</option>
     </select> */}
-    < select
-      onChange={e => handleAddrTypeChange(e)}
-  className="browser-default custom-select" >
-          <option value="5">5</option>
-      <option value="10">10</option>
-      <option value="20">20</option>
-         {/* {
-        Add.map((per, key) => <option defalut= "5" value={key}>{per}</option>)
-      } */}
-    </select >)
+  <input
+        type="file"
+        onChange={(e) => {
+          uploadImage(e);
+        }}
+      />
+      <br></br>
+      <img src={baseImage} height="200px" />
 
 
     </div>

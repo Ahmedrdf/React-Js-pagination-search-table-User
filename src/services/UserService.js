@@ -5,7 +5,7 @@ const getAll = () => {
 };
 
 const get = id => {
-  return http.get(`/Administartion/GetRoleById/${id}`);
+  return http.get(`/UserById?id=${id}`);
 };
 
 
@@ -18,7 +18,7 @@ const update = (id, data) => {
 };
 
 const remove = id => {
-  return http.delete(`/Administartion/DeleteteRoleById/${id}`);
+  return http.delete(`/DeleteUser?id=${id}`);
 };
 
 const removeAll = () => {
